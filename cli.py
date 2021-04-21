@@ -4,6 +4,11 @@ from tabulate import tabulate
 
 
 def print_data(coins):
+    """
+    Prints a beautiful table of all coin data to command line interface
+    :param coins: list of all coin objects
+    :return: print table
+    """
     total = 0
     coin_data_dict = {
         'Token': [],
@@ -30,4 +35,7 @@ def print_data(coins):
 
 
 def _cls():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    """
+    Clears command line terminal
+    """
+    return os.system('cls' if os.name == 'nt' else 'clear')

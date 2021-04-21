@@ -1,4 +1,7 @@
 class Coin:
+    """
+    Custom coin data structure class that holds coin data and allows set access for each variable from outside functions
+    """
     def __init__(self):
         self.contract = None
         self.quantity = None

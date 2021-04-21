@@ -9,6 +9,10 @@ from coin import Coin
 
 
 def get_coins():
+    """
+    Creates coin objects for each coin entered in config.py and returns a list containing all coin objects
+    :return: coins (list of coin objects)
+    """
     coins = []
     for key in config.portfolio:
         coin = Coin()
@@ -19,32 +23,61 @@ def get_coins():
 
 
 def get_driver():
+    """
+    Finds file path of geckodriver.exe and creates selenium driver
+    :return: driver
+    """
     gecko_path = path.join(getcwd(), "driver", "geckodriver.exe")
     options = Options()
-    options.add_argument('--headless')
+    if config.headless:
+        options.add_argument('--headless')
     driver = webdriver.Firefox(options=options, executable_path=gecko_path)
     return driver
 
 
 def get_symbol(page_data):
-    return page_data.find("span", id="tokenSymbol").get_text()
+    """
+    Extract the coin's symbol from the page's title
+    :param page_data: webpage data parsed by beautiful soup
+    :return: token symbol
+    """
+    title = page_data.title.string
+    symbol = title.split('$')[0].replace(' ', '')
+    return symbol
 
 
 def get_price(page_data):
-    price = page_data.find("span", id="price_num").get_text()
-    price = float(price.replace("$", ''))
+    """
+    Extract the coin's price from the page's title
+    :param page_data: webpage data parsed by beautiful soup
+    :return: coin price
+    """
+    title = page_data.title.string
+    price = float(title.split('$')[1].split(' ')[0].replace('$', ''))
     return price
 
 
 def get_balance(coin):
+    """
+    Calculate your coin balance based off quantity and price
+    :param coin: coin object
+    :return: coin balance
+    """
     return f'{coin.price * coin.quantity:.2f}'
 
 
 def terminate():
+    """
+    Kill all running firefox processes.
+    """
     system("taskkill /im firefox.exe /f")
     print("Sucessfully terminated all Firefox processes.\nSafe to exit. ")
 
+
 def main():
+    """
+    Main loop. Dynamically creates, searches, updates, and prints pricing 5-10 times per second to command line.
+    """
     coins = None
     try:
         cli._cls()
@@ -72,7 +105,8 @@ def main():
                     # try again if browser not loaded
                     except KeyboardInterrupt:
                         terminate()
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
             cli.print_data(coins)
             print("\n\n\nPress CTRL+C to terminate safely.")
