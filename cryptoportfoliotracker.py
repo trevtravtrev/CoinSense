@@ -77,7 +77,7 @@ def main():
             cli.print_data(coins)
             print("\n\n\nPress CTRL+C to terminate safely.")
     except KeyboardInterrupt:
-        terminate(coins)
+        terminate()
 
 
 if __name__ == '__main__':
