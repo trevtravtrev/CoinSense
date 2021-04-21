@@ -1,5 +1,6 @@
 from os import getcwd, path
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from time import sleep
 
@@ -17,49 +18,36 @@ def get_coins():
     return coins
 
 
-def get_gecko_driver():
+def get_driver():
     gecko_path = path.join(getcwd(), "driver", "geckodriver.exe")
-    options = webdriver.FirefoxOptions()
+    options = Options()
     options.add_argument('--headless')
-    driver = webdriver.Firefox(executable_path=gecko_path, options=options)
+    driver = webdriver.Firefox(options=options, executable_path=gecko_path)
     return driver
 
 
-def get_browser(coin, driver):
-    base_url = "charts.bogged.finance/?token="
-    full_url = base_url + coin.contract
-    return driver.get(full_url)
-
-
 def get_symbol(page_data):
-    return page_data.find("span", id="tokenSymbol")
+    return page_data.find("span", id="tokenSymbol").get_text()
 
 
 def get_price(page_data):
-    return page_data.find("span", id="price_num")
+    price = page_data.find("span", id="price_num").get_text()
+    price = float(price.replace("$", ''))
+    return price
 
 
 def get_balance(coin):
     return f'{coin.price * coin.quantity:.2f}'
 
 
-def print_debug_data(coin):
-    print(f"""
-Symbol: {coin.symbol}
-Quantity: {coin.quantity}
-Price: {coin.price}
-Balance: {coin.balance}
-""")
-
-
 def main():
+    base_url = "https://charts.bogged.finance/?token="
     coins = get_coins()
-    driver = get_gecko_driver()
     # coin actions that only need to run once
     for coin in coins:
-        coin.set_browser(get_browser(coin, driver))
-        page_data = BeautifulSoup(coin.browser.page_source)
-        coin.set_symbol(get_symbol(page_data))
+        coin.set_driver(get_driver())
+        coin.driver.get(base_url + coin.contract)
+
     # coin actions that update in infinite loop
     while True:
         for coin in coins:
@@ -67,15 +55,15 @@ def main():
             while True:
                 # check if browser is loaded
                 try:
-                    page_data = BeautifulSoup(coin.browser.page_source)
+                    page_data = BeautifulSoup(coin.driver.page_source, 'html.parser')
+                    coin.set_symbol(get_symbol(page_data))
                     coin.set_price(get_price(page_data))
                     coin.set_balance(get_balance(coin))
-                    print_debug_data(coin)
                     break
                 # try again if browser not loaded
                 except:
                     continue
-        sleep(config.update_time)
+            sleep(config.update_time)
 
 
 if __name__ == '__main__':

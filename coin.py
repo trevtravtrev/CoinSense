@@ -2,7 +2,7 @@ class Coin:
     def __init__(self):
         self.contract = None
         self.quantity = None
-        self.browser = None
+        self.driver = None
         self.symbol = None
         self.price = None
         self.balance = None
@@ -13,8 +13,8 @@ class Coin:
     def set_quantity(self, quantity):
         self.quantity = quantity
 
-    def set_browser(self, browser):
-        self.browser = browser
+    def set_driver(self, browser):
+        self.driver = browser
 
     def set_symbol(self, symbol):
         self.symbol = symbol
