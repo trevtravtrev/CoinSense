@@ -2,9 +2,9 @@ from os import getcwd, path
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
-from time import sleep
 
 import config
+import cli
 from coin import Coin
 
 
@@ -63,8 +63,7 @@ def main():
                 # try again if browser not loaded
                 except:
                     continue
-            sleep(config.update_time)
-
+        cli.print_data(coins)
 
 if __name__ == '__main__':
     main()
