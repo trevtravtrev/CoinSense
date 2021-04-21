@@ -12,6 +12,7 @@ Simple CLI tool to track your cryptocurrency portfolio in real time.
 
 
 ## To Use:  
+- install firefox if not already installed (https://www.mozilla.org/en-US/firefox/new/)
 - `pip install -r requirements.txt`
 - enter your coins in config.py
 - run cryptoportfoliotracker.py (or edit and run cryptoportfoliotracker.bat)
