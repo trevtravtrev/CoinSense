@@ -79,16 +79,19 @@ def main():
     Main loop. Dynamically creates, searches, updates, and prints pricing 5-10 times per second to command line.
     """
     coins = None
+    num_browsers = len(config.portfolio)
     try:
         cli._cls()
-        print("Gathering coin data... this might take a few seconds.")
-        print("\n\n\n\n\n\n\n\n\n\nPress CTRL+C to terminate safely.")
+        print("Gathering coin data... this might take a minute.")
+        print("Press CTRL+C at any time to terminate safely.")
         base_url = "https://charts.bogged.finance/?token="
         coins = get_coins()
         # coin actions that only need to run once
         for coin in coins:
+            print(f'{num_browsers} browsers left to open...')
             coin.set_driver(get_driver())
             coin.driver.get(base_url + coin.contract)
+            num_browsers -= 1
 
         # coin actions that update in infinite loop
         while True:
@@ -105,8 +108,7 @@ def main():
                     # try again if browser not loaded
                     except KeyboardInterrupt:
                         terminate()
-                    except Exception as e:
-                        print(e)
+                    except:
                         continue
             cli.print_data(coins)
             print("\n\n\nPress CTRL+C to terminate safely.")
