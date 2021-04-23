@@ -14,10 +14,19 @@ def get_coins():
     :return: coins (list of coin objects)
     """
     coins = []
-    for key in config.portfolio:
+    for key in config.bsc_portfolio:
         coin = Coin()
+        coin.set_coin_type("bsc")
         coin.set_contract(key)
-        coin.set_quantity(config.portfolio.get(key))
+        coin.set_quantity(config.bsc_portfolio.get(key))
+        coin.set_tracker_url()
+        coins.append(coin)
+    for key in config.eth_portfolio:
+        coin = Coin()
+        coin.set_coin_type("eth")
+        coin.set_contract(key)
+        coin.set_quantity(config.eth_portfolio.get(key))
+        coin.set_tracker_url()
         coins.append(coin)
     return coins
 
@@ -63,7 +72,7 @@ def get_balance(coin):
     :param coin: coin object
     :return: coin balance
     """
-    return f'{coin.price * coin.quantity:.2f}'
+    return float(f'{coin.price * coin.quantity:.2f}')
 
 
 def terminate():
@@ -79,18 +88,17 @@ def main():
     Main loop. Dynamically creates, searches, updates, and prints pricing 5-10 times per second to command line.
     """
     coins = None
-    num_browsers = len(config.portfolio)
     try:
         cli._cls()
         print("Gathering coin data... this might take a minute.")
         print("Press CTRL+C at any time to terminate safely.")
-        base_url = "https://charts.bogged.finance/?token="
         coins = get_coins()
+        num_browsers = len(coins)
         # coin actions that only need to run once
         for coin in coins:
-            print(f'{num_browsers} browsers left to open...')
+            print(f'{num_browsers} browser(s) left to open...')
             coin.set_driver(get_driver())
-            coin.driver.get(base_url + coin.contract)
+            coin.driver.get(coin.tracker_url)
             num_browsers -= 1
 
         # coin actions that update in infinite loop
