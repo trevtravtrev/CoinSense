@@ -1,9 +1,11 @@
-from selenium.webdriver.firefox.webdriver import WebDriver #type: ignore
+from selenium.webdriver.firefox.webdriver import WebDriver  # type: ignore
+
 
 class Coin:
     """
     Custom coin data structure class that holds coin data and allows set access for each variable from outside functions
     """
+
     tracker_url: str
     coin_type: str
     contract: str
