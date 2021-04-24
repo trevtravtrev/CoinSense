@@ -7,7 +7,7 @@ Simple CLI tool to track your cryptocurrency portfolio in real time.
 - Python Version: 3.9.1 (For latest features and better type hints)
 - Supported Operating Systems: Windows 10 (Technically supports MacOS and Linux, just needs a different webdriver and a change to the webdriver string in `Config(True, [], "geckodriver.exe")` inside of the main file)
 - Supported Coins: ALL binance smart chain coins, ALL ethereum blockchain coins, and most other popular coins  
-- Updates prices in real-time (5-10x per second
+- Updates prices in real-time (5-10x per second)
 
 ## To Use:  
 - install firefox if not already installed (https://www.mozilla.org/en-US/firefox/new/)
