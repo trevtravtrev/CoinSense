@@ -1,16 +1,17 @@
 import pandas as pd
 import os
 from tabulate import tabulate
+from coin import Coin
+from typing import List, Dict, Any
 
-
-def print_data(coins):
+def print_data(coins: List[Coin]):
     """
     Prints a beautiful table of all coin data to command line interface
     :param coins: list of all coin objects
     :return: print table
     """
     total = 0
-    coin_data_dict = {
+    coin_data_dict: Dict[str, List[Any]] = {
         'Token': [],
         'Price': [],
         'Quantity': [],
@@ -36,7 +37,7 @@ def print_data(coins):
     }
     df = df.append(total_dict, ignore_index=True)
     # format Balance column with dollar sign, commas, and 2 floating points after decimal
-    df['Balance'] = df.apply(lambda x: "${:,.2f}".format(x['Balance']), axis=1)
+    df['Balance'] = df.apply(lambda x: "${:,.2f}".format(x['Balance']), axis=1) #type: ignore
     _cls()
     return print(tabulate(df, headers='keys', tablefmt='fancy_grid', showindex=False))
 
