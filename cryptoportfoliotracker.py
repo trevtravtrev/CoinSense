@@ -82,7 +82,24 @@ def terminate():
     Kill all running firefox processes.
     """
     system("taskkill /im firefox.exe /f")
-    print("Sucessfully terminated all Firefox processes.\nSafe to exit. ")
+    print("\nSuccessfully terminated all Firefox processes.\nSafe to exit.")
+
+
+def print_logo():
+    return print("""
+  ___  ____  _  _  ____  ____  __  
+ / __)(  _ \( \/ )(  _ \(_  _)/  \ 
+( (__  )   / )  /  ) __/  )( (  O )
+ \___)(__\_)(__/  (__)   (__) \__/ 
+ ____   __  ____  ____  ____  __   __    __  __  
+(  _ \ /  \(  _ \(_  _)(  __)/  \ (  )  (  )/  \ 
+ ) __/(  O ))   /  )(   ) _)(  O )/ (_/\ )((  O )
+(__)   \__/(__\_) (__) (__)  \__/ \____/(__)\__/ 
+ ____  ____   __    ___  __ _  ____  ____ 
+(_  _)(  _ \ / _\  / __)(  / )(  __)(  _ \\
+  )(   )   //    \( (__  )  (  ) _)  )   /
+ (__) (__\_)\_/\_/ \___)(__\_)(____)(__\_)
+        """)
 
 
 def _open_tracker(coin):
@@ -102,9 +119,8 @@ def main():
     thread_list = []
     try:
         cli._cls()
-        print("======= Welcome to Crypto Portfolio Tracker =======")
+        print_logo()
         print("Press CTRL+C at any time to terminate safely.\n")
-        print("Starting... this might take a minute.")
         coins = get_coins()
         num_coins = len(coins)
         print(f'\nOpening {num_coins} coin trackers...')
