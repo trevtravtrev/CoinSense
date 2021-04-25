@@ -1,7 +1,9 @@
+import threading
 from os import getcwd, path, system
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
+from time import sleep
 
 import config
 import cli
@@ -83,24 +85,41 @@ def terminate():
     print("Sucessfully terminated all Firefox processes.\nSafe to exit. ")
 
 
+def _open_tracker(coin):
+    """
+    Spawn driver and open browser webpage for a coin tracker.
+    :param coin: coin object
+    """
+    coin.set_driver(get_driver())
+    coin.driver.get(coin.tracker_url)
+
+
 def main():
     """
     Main loop. Dynamically creates, searches, updates, and prints pricing 5-10 times per second to command line.
     """
     coins = None
+    thread_list = []
     try:
         cli._cls()
-        print("Gathering coin data... this might take a minute.")
-        print("Press CTRL+C at any time to terminate safely.")
+        print("======= Welcome to Crypto Portfolio Tracker =======")
+        print("Press CTRL+C at any time to terminate safely.\n")
+        print("Starting... this might take a minute.")
         coins = get_coins()
-        num_browsers = len(coins)
+        num_coins = len(coins)
+        print(f'\nOpening {num_coins} coin trackers...')
         # coin actions that only need to run once
+        # open coin tracking urls in separate browsers
         for coin in coins:
-            print(f'{num_browsers} browser(s) left to open...')
-            coin.set_driver(get_driver())
-            coin.driver.get(coin.tracker_url)
-            num_browsers -= 1
-
+            thread = threading.Thread(target=_open_tracker, args=(coin,))
+            thread.start()
+            thread_list.append(thread)
+        # wait for all threads to complete
+        for thread in thread_list:
+            thread.join()
+            num_coins -= 1
+            print(f'{num_coins} remaining...')
+        print("\nGathering coin data...")
         # coin actions that update in infinite loop
         while True:
             for coin in coins:
@@ -120,6 +139,7 @@ def main():
                         continue
             cli.print_data(coins)
             print("\n\n\nPress CTRL+C to terminate safely.")
+            sleep(1)
     except KeyboardInterrupt:
         terminate()
 

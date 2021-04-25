@@ -7,7 +7,7 @@ Simple CLI tool to track your cryptocurrency portfolio in real time.
 - Python Version: 3.7  
 - Supported Operating Systems: Windows 10
 - Supported Coins: ALL binance smart chain coins, ALL ethereum blockchain coins, and most other popular coins  
-- Updates prices in real-time (5-10x per second)
+- Updates prices in real-time (once per second)
 
 
 
