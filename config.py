@@ -22,3 +22,5 @@ eth_portfolio = {
 }
 
 headless = True
+
+refresh_time = 1

@@ -155,7 +155,7 @@ def main():
                         continue
             cli.print_data(coins)
             print("\n\n\nPress CTRL+C to terminate safely.")
-            sleep(1)
+            sleep(config.refresh_time)
     except KeyboardInterrupt:
         terminate()
 
