@@ -1,9 +1,12 @@
 import threading
+import logging
 from os import getcwd, path, system
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from time import sleep
+from http_request_randomizer.requests.proxy.requestProxy import RequestProxy
+from random import randint
 
 import config
 import cli
@@ -33,7 +36,17 @@ def get_coins():
     return coins
 
 
-def get_driver():
+def get_proxies():
+    """
+    Gets a list of proxies and returns them
+    :return: proxy list
+    """
+    req_proxy = RequestProxy()
+    req_proxy.logger.disabled = True
+    return req_proxy.get_proxy_list()
+
+
+def get_driver(proxy):
     """
     Finds file path of geckodriver.exe and creates selenium driver
     :return: driver
@@ -42,6 +55,14 @@ def get_driver():
     options = Options()
     if config.headless:
         options.add_argument('--headless')
+    webdriver.DesiredCapabilities.CHROME['proxy'] = {
+        "httpProxy": proxy,
+        "ftpProxy": proxy,
+        "sslProxy": proxy,
+
+        "proxyType": "MANUAL",
+
+    }
     driver = webdriver.Firefox(options=options, executable_path=gecko_path)
     return driver
 
@@ -102,12 +123,12 @@ def print_logo():
         """)
 
 
-def _open_tracker(coin):
+def _open_tracker(coin, proxy):
     """
     Spawn driver and open browser webpage for a coin tracker.
     :param coin: coin object
     """
-    coin.set_driver(get_driver())
+    coin.set_driver(get_driver(proxy))
     coin.driver.get(coin.tracker_url)
 
 
@@ -117,6 +138,8 @@ def main():
     """
     coins = None
     thread_list = []
+    # globally disable logging because the http_request_randomizer library has un-configurable logging
+    logging.disable(logging.CRITICAL)
     try:
         cli._cls()
         print_logo()
@@ -124,10 +147,16 @@ def main():
         coins = get_coins()
         num_coins = len(coins)
         print(f'\nOpening {num_coins} coin trackers...')
-        # coin actions that only need to run once
+        # get proxies
+        proxies = get_proxies()
         # open coin tracking urls in separate browsers
         for coin in coins:
-            thread = threading.Thread(target=_open_tracker, args=(coin,))
+            # grab random proxy from list and remove it from list
+            random_proxy = proxies[randint(0, len(proxies))]
+            proxies.remove(random_proxy)
+            proxy = random_proxy.get_address()
+            # threaded implementation to open trackers
+            thread = threading.Thread(target=_open_tracker, args=(coin, proxy))
             thread.start()
             thread_list.append(thread)
         # wait for all threads to complete
