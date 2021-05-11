@@ -6,6 +6,7 @@ from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from time import sleep
 from http_request_randomizer.requests.proxy.requestProxy import RequestProxy
+from user_agent import generate_user_agent
 from random import randint
 
 import config
@@ -52,6 +53,8 @@ def get_driver(proxy=None):
     :return: driver
     """
     gecko_path = path.join(getcwd(), "driver", "geckodriver.exe")
+    profile = webdriver.FirefoxProfile()
+    profile.set_preference("general.useragent.override", generate_user_agent())
     options = Options()
     if config.headless:
         options.add_argument('--headless')
@@ -64,9 +67,9 @@ def get_driver(proxy=None):
             "ftpProxy": proxy,
             "sslProxy": proxy
         }
-        driver = webdriver.Firefox(options=options, executable_path=gecko_path, capabilities=firefox_capabilities)
+        driver = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=gecko_path, capabilities=firefox_capabilities)
     else:
-        driver = webdriver.Firefox(options=options, executable_path=gecko_path)
+        driver = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=gecko_path)
     return driver
 
 
@@ -157,7 +160,7 @@ def main():
         for coin in coins:
             if config.use_proxies:
                 # grab random proxy from list and remove it from list
-                random_proxy = proxies[randint(0, len(proxies))]
+                random_proxy = proxies[randint(0, len(proxies)-1)]
                 proxies.remove(random_proxy)
                 proxy = random_proxy.get_address()
                 # threaded implementation to open trackers
