@@ -167,7 +167,7 @@ def main():
             thread.start()
             thread_list.append(thread)
             if config.ddos_bypass and coin.coin_type == "eth":
-                sleep(5)
+                sleep(7)
         # wait for all threads to complete
         for thread in thread_list:
             thread.join()
