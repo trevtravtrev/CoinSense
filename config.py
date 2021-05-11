@@ -26,6 +26,10 @@ eth_portfolio = {
 
 headless = True
 
+firefox_profile_path = r"path\to\your\firefox\profile"
+
+use_random_user_agent = True
+
 use_proxies = False
 
 ddos_bypass = True

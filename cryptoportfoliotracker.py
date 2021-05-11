@@ -53,8 +53,12 @@ def get_driver(proxy=None):
     :return: driver
     """
     gecko_path = path.join(getcwd(), "driver", "geckodriver.exe")
-    profile = webdriver.FirefoxProfile()
-    profile.set_preference("general.useragent.override", generate_user_agent())
+    if config.firefox_profile_path:
+        profile = webdriver.FirefoxProfile(config.firefox_profile_path)
+    else:
+        profile = webdriver.FirefoxProfile()
+    if config.use_random_user_agent:
+        profile.set_preference("general.useragent.override", generate_user_agent())
     options = Options()
     if config.headless:
         options.add_argument('--headless')
