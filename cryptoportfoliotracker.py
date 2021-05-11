@@ -46,7 +46,7 @@ def get_proxies():
     return req_proxy.get_proxy_list()
 
 
-def get_driver(proxy):
+def get_driver(proxy=None):
     """
     Finds file path of geckodriver.exe and creates selenium driver
     :return: driver
@@ -55,15 +55,18 @@ def get_driver(proxy):
     options = Options()
     if config.headless:
         options.add_argument('--headless')
-    webdriver.DesiredCapabilities.CHROME['proxy'] = {
-        "httpProxy": proxy,
-        "ftpProxy": proxy,
-        "sslProxy": proxy,
-
-        "proxyType": "MANUAL",
-
-    }
-    driver = webdriver.Firefox(options=options, executable_path=gecko_path)
+    if proxy:
+        firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
+        firefox_capabilities['marionette'] = True
+        firefox_capabilities['proxy'] = {
+            "proxyType": "MANUAL",
+            "httpProxy": proxy,
+            "ftpProxy": proxy,
+            "sslProxy": proxy
+        }
+        driver = webdriver.Firefox(options=options, executable_path=gecko_path, capabilities=firefox_capabilities)
+    else:
+        driver = webdriver.Firefox(options=options, executable_path=gecko_path)
     return driver
 
 
@@ -123,7 +126,7 @@ def print_logo():
         """)
 
 
-def _open_tracker(coin, proxy):
+def _open_tracker(coin, proxy=None):
     """
     Spawn driver and open browser webpage for a coin tracker.
     :param coin: coin object
@@ -147,18 +150,24 @@ def main():
         coins = get_coins()
         num_coins = len(coins)
         print(f'\nOpening {num_coins} coin trackers...')
-        # get proxies
-        proxies = get_proxies()
+        if config.use_proxies:
+            # get proxies
+            proxies = get_proxies()
         # open coin tracking urls in separate browsers
         for coin in coins:
-            # grab random proxy from list and remove it from list
-            random_proxy = proxies[randint(0, len(proxies))]
-            proxies.remove(random_proxy)
-            proxy = random_proxy.get_address()
-            # threaded implementation to open trackers
-            thread = threading.Thread(target=_open_tracker, args=(coin, proxy))
+            if config.use_proxies:
+                # grab random proxy from list and remove it from list
+                random_proxy = proxies[randint(0, len(proxies))]
+                proxies.remove(random_proxy)
+                proxy = random_proxy.get_address()
+                # threaded implementation to open trackers
+                thread = threading.Thread(target=_open_tracker, args=(coin, proxy))
+            else:
+                thread = threading.Thread(target=_open_tracker, args=(coin,))
             thread.start()
             thread_list.append(thread)
+            if config.ddos_bypass and coin.coin_type == "eth":
+                sleep(5)
         # wait for all threads to complete
         for thread in thread_list:
             thread.join()

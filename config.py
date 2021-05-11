@@ -4,6 +4,9 @@ Crypto Portfolio Tracker Settings Configuration File
 bsc_portfolio: a binance smart chain coin dictionary {contract:quantity} where "contract" is the token's contract address string and "quantity" is an int for the quantity you own
 eth_portfolio: a ethereum blockchain coin dictionary {contract:quantity} where "contract" is the token's contract address string and "quantity" is an int for the quantity you own
 headless: a bool parameter that sets whether the selenium background coin tracking firefox processes will be visible to user or not (suggested: True)
+use_proxies: a bool parameter that sets whether or not a unique proxy will be used for each coin tracking browser to get around DDOS protection. Buggy (suggested: False)
+ddos_bypass: a bool parameter that bypasses coin tracking website ddos protectors with the trade off of longer initial load time upon launch (suggested: True)
+refresh_time: an int number that sets the refresh time for updating prices. Higher time uses less CPU (suggested: 1-5 seconds)
 """
 
 # tracked by bogged.finance charts (make sure the contract addresses are trackable on the website)
@@ -23,4 +26,8 @@ eth_portfolio = {
 
 headless = True
 
-refresh_time = 1
+use_proxies = False
+
+ddos_bypass = True
+
+refresh_time = 5
