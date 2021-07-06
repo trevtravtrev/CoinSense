@@ -98,7 +98,7 @@ def get_price(page_data):
     :return: coin price
     """
     title = page_data.title.string
-    price = float(title.split('$')[1].split(' ')[0].replace('$', ''))
+    price = float(title.split('$')[1].split(' ')[0].replace('$', '').replace(",", ""))
     return price
 
 
