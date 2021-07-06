@@ -77,14 +77,17 @@ def get_driver(proxy=None):
     return driver
 
 
-def get_symbol(page_data):
+def get_symbol(coin, page_data):
     """
     Extract the coin's symbol from the page's title
     :param page_data: webpage data parsed by beautiful soup
     :return: token symbol
     """
     title = page_data.title.string
-    symbol = title.split('$')[0].replace(' ', '')
+    if coin.coin_type == "bsc":
+        symbol = title.split('$')[0].replace(' ', '')
+    elif coin.coin_type == "eth":
+        symbol = title.split(' ')[1].replace(' ', '')
     return symbol
 
 
@@ -189,7 +192,7 @@ def main():
                     # check if browser is loaded
                     try:
                         page_data = BeautifulSoup(coin.driver.page_source, 'html.parser')
-                        coin.set_symbol(get_symbol(page_data))
+                        coin.set_symbol(get_symbol(coin, page_data))
                         coin.set_price(get_price(page_data))
                         coin.set_balance(get_balance(coin))
                         break

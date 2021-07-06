@@ -3,7 +3,7 @@ class Coin:
     Custom coin data structure class that holds coin data and allows set access for each variable from outside functions
     """
     bsc_url = "https://charts.bogged.finance/?token="
-    eth_url = "https://www.dextools.io/app/uniswap/pair-explorer/"
+    eth_url = "https://dex.guru/token/"
 
     def __init__(self):
         self.tracker_url = None

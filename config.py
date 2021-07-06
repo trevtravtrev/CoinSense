@@ -22,10 +22,10 @@ bsc_portfolio = {
     "0xfaFf5251EA98f90540D6BacDf7A458f61b456C06": 100000000
 }
 
-# tracked by dextools.io charts (make sure the contract addresses are trackable on the website)
+# tracked by dex.guru charts (search address on website and get address string from url that includes "-bsc" or "-eth", make sure the contract addresses are trackable on the website)
 eth_portfolio = {
-    "0xc0067d751fb1172dbab1fa003efe214ee8f419b6": 2000,
-    "0x7fd1de95fc975fbbd8be260525758549ec477960": 1000000
+    "0xba2ae424d960c26247dd6c32edc70b295c744c43-bsc": 20000,
+    "0xfad45e47083e4607302aa43c65fb3106f1cd7607-eth": 3000000
 }
 
 headless = True
