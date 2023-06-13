@@ -61,19 +61,26 @@ def get_driver(proxy=None):
         profile.set_preference("general.useragent.override", generate_user_agent())
     options = Options()
     if config.headless:
-        options.add_argument('--headless')
+        options.add_argument("--headless")
     if proxy:
         firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
-        firefox_capabilities['marionette'] = True
-        firefox_capabilities['proxy'] = {
+        firefox_capabilities["marionette"] = True
+        firefox_capabilities["proxy"] = {
             "proxyType": "MANUAL",
             "httpProxy": proxy,
             "ftpProxy": proxy,
-            "sslProxy": proxy
+            "sslProxy": proxy,
         }
-        driver = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=gecko_path, capabilities=firefox_capabilities)
+        driver = webdriver.Firefox(
+            firefox_profile=profile,
+            options=options,
+            executable_path=gecko_path,
+            capabilities=firefox_capabilities,
+        )
     else:
-        driver = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=gecko_path)
+        driver = webdriver.Firefox(
+            firefox_profile=profile, options=options, executable_path=gecko_path
+        )
     return driver
 
 
@@ -85,9 +92,9 @@ def get_symbol(coin, page_data):
     """
     title = page_data.title.string
     if coin.coin_type == "bsc":
-        symbol = title.split('$')[0].replace(' ', '')
+        symbol = title.split("$")[0].replace(" ", "")
     elif coin.coin_type == "eth":
-        symbol = title.split(' ')[1].replace(' ', '')
+        symbol = title.split(" ")[1].replace(" ", "")
     return symbol
 
 
@@ -98,7 +105,7 @@ def get_price(page_data):
     :return: coin price
     """
     title = page_data.title.string
-    price = float(title.split('$')[1].split(' ')[0].replace('$', '').replace(",", ""))
+    price = float(title.split("$")[1].split(" ")[0].replace("$", "").replace(",", ""))
     return price
 
 
@@ -108,7 +115,7 @@ def get_balance(coin):
     :param coin: coin object
     :return: coin balance
     """
-    return float(f'{coin.price * coin.quantity:.2f}')
+    return float(f"{coin.price * coin.quantity:.2f}")
 
 
 def terminate():
@@ -120,7 +127,8 @@ def terminate():
 
 
 def print_logo():
-    return print("""
+    return print(
+        """
   ___  ____  _  _  ____  ____  __  
  / __)(  _ \( \/ )(  _ \(_  _)/  \ 
 ( (__  )   / )  /  ) __/  )( (  O )
@@ -133,7 +141,8 @@ def print_logo():
 (_  _)(  _ \ / _\  / __)(  / )(  __)(  _ \\
   )(   )   //    \( (__  )  (  ) _)  )   /
  (__) (__\_)\_/\_/ \___)(__\_)(____)(__\_)
-        """)
+        """
+    )
 
 
 def _open_tracker(coin, proxy=None):
@@ -159,7 +168,7 @@ def main():
         print("Press CTRL+C at any time to terminate safely.\n")
         coins = get_coins()
         num_coins = len(coins)
-        print(f'\nOpening {num_coins} coin trackers...')
+        print(f"\nOpening {num_coins} coin trackers...")
         if config.use_proxies:
             # get proxies
             proxies = get_proxies()
@@ -167,7 +176,7 @@ def main():
         for coin in coins:
             if config.use_proxies:
                 # grab random proxy from list and remove it from list
-                random_proxy = proxies[randint(0, len(proxies)-1)]
+                random_proxy = proxies[randint(0, len(proxies) - 1)]
                 proxies.remove(random_proxy)
                 proxy = random_proxy.get_address()
                 # threaded implementation to open trackers
@@ -182,7 +191,7 @@ def main():
         for thread in thread_list:
             thread.join()
             num_coins -= 1
-            print(f'{num_coins} remaining...')
+            print(f"{num_coins} remaining...")
         print("\nGathering coin data...")
         # coin actions that update in infinite loop
         while True:
@@ -191,7 +200,9 @@ def main():
                 while True:
                     # check if browser is loaded
                     try:
-                        page_data = BeautifulSoup(coin.driver.page_source, 'html.parser')
+                        page_data = BeautifulSoup(
+                            coin.driver.page_source, "html.parser"
+                        )
                         coin.set_symbol(get_symbol(coin, page_data))
                         coin.set_price(get_price(page_data))
                         coin.set_balance(get_balance(coin))
@@ -208,5 +219,5 @@ def main():
         terminate()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
