@@ -41,22 +41,7 @@
 1. Install [GitHub Desktop](https://desktop.github.com/) (if not already installed)  
 2. Follow instructions [here](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop) to clone
 # Run the Code
-## Option 1: Docker (recommended)
-
-Docker is a free tool that simplifies the process of running applications by packaging them with everything they need, so you can easily move them between different machines and ensure they work quickly and consistently, saving you time and reducing potential conflicts. If you're not familiar with docker, we STRONGLY recommend taking a few minutes to become familiar [here](https://www.docker.com/blog/getting-started-with-docker-desktop/#:~:text=Docker%20Desktop%20is%20an%20easy,%2C%20Kubernetes%2C%20and%20Credential%20Helper.).  
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) (if not already installed)
-2. Open Docker Desktop
-3. Build the Docker image:
-```
-cd CoinSense
-docker build -t coinsense .
-```
-
-4. Run the Docker container:
-```
-docker run coinsense
-```
-## Option 2: Poetry
+## Option 1: Poetry (recommended)
 1. Install Poetry (if not already installed)
 ```
 pip install poetry
@@ -69,6 +54,20 @@ poetry install
 3. Run CoinSense
 ```
 poetry run python main.py
+```
+## Option 2: Docker
+Docker is the easiest way to get CoinSense running, but you lose the pretty colors and formatting in the CLI. Docker, by default, just pipes the raw CLI data to its own unformatted CLI output in the docker desktop interface. For the best experience, option 1 (via poetry) is recommended.  
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) (if not already installed)
+2. Open Docker Desktop
+3. Build the Docker image:
+```
+cd CoinSense
+docker build -t coinsense .
+```
+
+4. Run the Docker container:
+```
+docker run coinsense
 ```
 ## Option 3: requirements.txt
 1. Create the virtual environment:
